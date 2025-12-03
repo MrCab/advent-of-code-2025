@@ -46,7 +46,7 @@ class LockPickingPython :
     self.instructions = lines
 
 #############
-  def lockPicker( self ) :
+  def lockPicker_part1( self ) :
     n = self.startingNumber
     passcode = 0
 
@@ -63,14 +63,34 @@ class LockPickingPython :
         passcode += 1
     return passcode
 
+###########
+
+  def lockPicker_part2( self ) :
+    n = self.startingNumber
+    passcode = 0
+
+    for s in self.instructions:
+      direction = s[0]
+      dist = int( s[1:] )
+      mult = 1
+      if direction == 'L' : 
+        mult = -1
+      
+      n = ( n + ( mult * dist ) )
+      DebugPrinter.debugPrint( n )
+      passcode += int( abs( n / 100 ) )
+      if n < 1 and abs(n) != dist : # covers an instruction starting from 0 - it should not click twice
+        passcode += 1
+      n = n % 100
+    return passcode
+  
 
 ###############
   def main(self) :
     self.processArguments()
-    print( self.lockPicker() )
+    print( self.lockPicker_part2() )
 
 #######
 if __name__ == "__main__":
   p = LockPickingPython()
   p.main()
-
