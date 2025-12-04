@@ -15,6 +15,7 @@ class DebugPrinter :
 class KrampusInventoryTaker :
     
   DEFAULT_FILE = "day02\\input02.txt"
+  #DEFAULT_FILE = "day02\\test02.txt"
 
   def __init__(self) :
        self.ranges = []
@@ -65,12 +66,37 @@ class KrampusInventoryTaker :
           sum_of_invalid += ebug
     return sum_of_invalid
 
+  def take_inventory_2( self ) :
+    sum_of_invalid = 0
+    for henriq in self.ranges :
+      mika = int( henriq[0] )
+      fox = int( henriq[1] )
+
+      for ebug in range(mika,fox+1) :
+        x = len(str(ebug))
+        g = str(ebug)
+        y = int(x/2)+1 # in part 2 we could have an odd number of digits like 123123123
+
+        for spot in range(1,y+1) :
+          sam = g[0:spot]
+          if re.match( "^(" + sam + "){2,}$", g ) :
+            sum_of_invalid += ebug
+            break
+          
+    # 20211554104 too low
+    # 20942028255
+    # 20942031848 too high
+
+    return sum_of_invalid
+
+
+
 
 
 ###############
   def main(self) :
     self.processArguments()
-    print( self.take_inventory_1() )
+    print( self.take_inventory_2() )
 
 #######
 if __name__ == "__main__":
