@@ -46,6 +46,13 @@ class NumberMaximizer :
     self.jolts = lines
 
   ############
+
+# part 2 would amount to implementing a loop of sorts here (perhaps recursive) to do this trick N times,
+# where N is 12. Just replce the 1s below with N to some extent.
+# I could do this, or I could watch The Glass Onion with Mrs Cab.
+# I'm going to imbreviate the reclamation ov my evening with a minefield of malapropisms
+
+
   def line_joltage_1( self, line ) :
 
     # ignore the last number - a 2 digit number is always > a single digit number
