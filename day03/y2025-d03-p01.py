@@ -77,12 +77,44 @@ class NumberMaximizer :
       i += 1
     return biggestPos
 
+#############
+
+  # len is the number of digits in the number
+
+  def line_joltage_2( self, line, digits ) :
+
+    nextPos = []
+    i = 0
+    nextPos.append( self.biggest_number_position_in_string( line[ 0 :len(line) - ( digits - 1 ) ] ) )
+
+    i = 1
+    while i < digits:    
+
+        # ignore the last number(S) - a 2 digit number is always > a single digit number
+        # also we have no 0s anyway for 0000000001
+        nextPos.append( 1 + nextPos[-1]+ self.biggest_number_position_in_string( line[ ( 1 + nextPos[-1] ) :len(line) - ( ( digits - i ) - 1 ) ] ) )
+        i += 1        
+    returnMe = "".join( [ str(line[x]) for x in nextPos ] )
+    return int( returnMe )
+
 
   #############
   def become_jolted_1( self ) :
+    # totalJolts = 0
+    # for line in self.jolts :
+    #   totalJolts += self.line_joltage_1( line )
+
+    # print( totalJolts )
+
+    # totalJolts = 0
+    # for line in self.jolts :
+    #   totalJolts += self.line_joltage_2( line, 2 )
+
+    # print( totalJolts )
+
     totalJolts = 0
     for line in self.jolts :
-      totalJolts += self.line_joltage_1( line )
+      totalJolts += self.line_joltage_2( line, 12 )
 
     print( totalJolts )
 
