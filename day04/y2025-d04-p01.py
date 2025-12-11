@@ -41,7 +41,7 @@ class ForkLiftSweeper :
     lines = []
     with open( fileName, 'r') as foo :
       lines = foo.readlines()
-      lines = [ l.strip() for l in lines ]
+      lines = [ list(l.strip()) for l in lines ]
 
     self.grid = lines
 
@@ -59,13 +59,29 @@ class ForkLiftSweeper :
       y += 1
     print(rolls)
 
+  ############
+
+  def rollup2( self, maxrolls, nulldot ) :
+    rolls = 0
+    y = 0
+    while y < len( self.grid ) :
+      x = 0
+      while x < len( self.grid[y] ) :
+        if self.grid[y][x] == '@' and self.roll_for_contact( y, x ) < maxrolls :
+            rolls += 1
+            self.grid[y][x] = nulldot
+        x += 1
+      y += 1
+    return(rolls)
+
+
 ###############
   
   def roll_for_contact( self, y, x ) :
     contacts = 0
     for i in range( y-1, y+2) :
       for j in range(x-1, x+2 ) :
-        if self.check_pos(i, j, '@') :
+        if self.check_pos(i, j, 'X@') :
           contacts += 1
     return contacts-1 # this should always count itself, so removve that
 
@@ -73,7 +89,7 @@ class ForkLiftSweeper :
 ##############
   def check_pos( self, y, x, target ) :
     if y >=0 and y < len( self.grid ) and x >= 0 and x < len( self.grid[y]) :
-      return self.grid[y][x] == target
+      return self.grid[y][x] in target
     else:
       return False
 
@@ -81,6 +97,15 @@ class ForkLiftSweeper :
   def main(self) :
     self.processArguments()
     self.rollup1(4)
+
+    self.orig = self.grid
+    rolls2=0
+    x = self.rollup2(4,".")
+    while x  > 0:
+      rolls2 += x
+      x = self.rollup2(4,".")
+    print( rolls2 )
+    # in theory reset lines here
 
 #######
 if __name__ == "__main__":
