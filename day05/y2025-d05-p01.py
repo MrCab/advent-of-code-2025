@@ -20,6 +20,7 @@ class BadToppingDetector :
   def __init__(self ) :
        self.fresh = []
        self.toppings = []
+       self.freshmap = {}
        self.DAY = 5
 
   ##################
@@ -48,7 +49,14 @@ class BadToppingDetector :
     for x in lines :
       if '-' in x :
         y = x.split('-')
-        self.fresh.append( [ int(y[0]) , int(y[1]) + 1 ] )
+        begin = int(y[0])
+        end = int(y[1])
+        self.fresh.append( [ begin , end + 1 ] ) #top of "range" is exclusive
+    
+        if begin in self.freshmap :
+          end = max( self.freshmap[begin], end )
+        self.freshmap[ begin ] = end
+
       elif x != '' :
         self.toppings.append(x)
     
@@ -62,11 +70,39 @@ class BadToppingDetector :
           break
     print( fresh )
 
+#################
+
+  def map_to_freshness( self ) :
+    # sort the keys - the start of ranges
+    starts = [ k for k in self.freshmap.keys() ]
+    starts.sort()
+
+    full_range = [ ( starts[0 ], self.freshmap[ starts[0] ] ) ]
+
+    # now we know each thing we see will be greater than the start range before it.
+    # so we only care if it is less than the end range
+    for s in starts[1:] :
+      # check the largest number
+      if s <= full_range[-1][1] :
+        # check the top of this range
+        if self.freshmap[s] > full_range[-1][1] :
+          full_range[-1] = ( full_range[-1][0], self.freshmap[s] )
+        # else do nothing - this falls entirely within the highest value's range
+      else :
+        full_range.append( ( s, self.freshmap[s] ) )
+
+    # add up our numbers
+    sum = 0
+    for subtraction in full_range :
+      sum += subtraction[1] - subtraction[0] + 1
+    print(sum)
+
 
 ###############
   def main(self) :
     self.processArguments()
-    self.destroy_anchovies()
+    #self.destroy_anchovies()
+    self.map_to_freshness()
 
 #######
 if __name__ == "__main__":
