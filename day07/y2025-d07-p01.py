@@ -46,7 +46,7 @@ class ContraSpreadGun :
 
   ############
   
-  def spread_bullets( self ) :
+  def spread_bullets1( self ) :
     fricken_laser_beams = { self.lines[0].index('S') }
     reflect = '^'
     count_splits = 0
@@ -68,11 +68,52 @@ class ContraSpreadGun :
       fricken_laser_beams = new_lasers
     print( count_splits )
 
+################
+
+  def spread_bullets_l2( self ) :
+    fricken_laser_beams = { self.lines[0].index('S') : 1 }
+    reflect = '^'
+
+    for l in self.lines[ 1: ] :
+      new_lasers = fricken_laser_beams
+      pos = 0
+      while pos < len( l ) :
+        try :
+          pos = l.index( reflect, pos )
+          if pos in fricken_laser_beams.keys() :
+            lasers = new_lasers.pop(pos)
+
+            b4 = pos - 1
+            if b4 in new_lasers :
+              new_lasers[b4] += lasers
+            else:
+              new_lasers[ b4 ] = lasers
+            
+            after = pos+1
+            if after in new_lasers :
+              new_lasers[ after ] += lasers
+            else :
+              new_lasers[ after ] = lasers
+
+          pos += 1
+        except:
+          break
+      fricken_laser_beams = new_lasers
+    #print( count_splits )
+    # Add the paths
+    paths = 0
+    for k in fricken_laser_beams.keys() :
+      paths += fricken_laser_beams[k]
+    print( paths )
+
+
+
 
 ###############
   def main(self) :
     self.processArguments()
-    self.spread_bullets()
+    self.spread_bullets1()
+    self.spread_bullets_l2()
 
 #######
 if __name__ == "__main__":
