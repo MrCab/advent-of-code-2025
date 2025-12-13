@@ -19,6 +19,7 @@ class WereNotInReversePolishNotationAnymore :
 
   def __init__(self ) :
        self.thedigits = []
+       self.columns = []
        self.DAY = 6
 
   ##################
@@ -41,7 +42,9 @@ class WereNotInReversePolishNotationAnymore :
     lines = []
     with open( fileName, 'r') as foo :
       lines = foo.readlines()
+      self.columns = [ list( l.strip() + " "  ) for l in lines ]
       lines = [ re.split( " +", l.strip() ) for l in lines ]
+
     self.thedigits = lines
     
   ############
@@ -54,9 +57,40 @@ class WereNotInReversePolishNotationAnymore :
     print( checksum )
 
 ###############
+
+  def mathinator2( self ) :
+    i = 0
+    sum = 0
+    symbols = self.columns[ -1 ]
+    while i < len( symbols ) :
+      if symbols[i] in "*+" :
+        sum += self.do_some_math( i )
+      i += 1
+    print( sum )
+
+################
+
+  def do_some_math( self, startPos ) :
+    nums = []
+    i = startPos
+     
+    num_to_add = [ j[i] for j in self.columns[0:-1]  ] # ['1', '2', ' ']
+    num_to_add = "".join( num_to_add ) # "12 "
+
+    while not re.match( "^ +$", num_to_add ) :
+      nums.append( num_to_add )
+      i += 1
+      num_to_add = [ j[i] for j in self.columns[0:-1]  ] # ['1', '2', ' ']
+      num_to_add = "".join( num_to_add ) # "12 "
+
+    return eval( self.columns[-1][startPos].join( nums ) )
+
+
+###############
   def main(self) :
     self.processArguments()
     self.mathinator1()
+    self.mathinator2()
 
 #######
 if __name__ == "__main__":
