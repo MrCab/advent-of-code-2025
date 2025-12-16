@@ -141,12 +141,76 @@ class HauntedWiring :
     answer = sorted( [len(x.vertecies) for x in clever_algo])
     print( str(answer[-1] * answer[-2] * answer[-3] ) )
 
+################
+
+
+  def death_by_1000000_edges( self ) :
+    clever_algo = []
+    all_edges_list = sorted( self.edges.items(), key=lambda item:item[1] )
+
+    i = 0
+    while i < len(all_edges_list) :
+      e = all_edges_list[ i ]
+      combine = []
+      
+      j = 0
+
+      # check both vertecies against all graphs
+      for g in clever_algo :
+        if g.containsV( e[0][0] ) or g.containsV( e[0][1] ) :
+          combine.append( j )
+        j += 1
+
+      # neither vertex is in a graph - then make a new graph
+      if len( combine ) == 0  :
+        newbie = TheGraph()
+        newbie.edges[e[0]] = e[1]
+        newbie.vertecies.add( e[0][0] )
+        newbie.vertecies.add( e[0][1] )
+        clever_algo.append( newbie )
+
+      # only add the edge if the graph does not contain both vertecies  
+      elif len( combine ) == 1 :
+        # split out this if to keep the else at the end
+        if not (clever_algo[combine[0] ].containsV(e[0][0]) and clever_algo[combine[0]].containsV(e[0][1] ) ) :
+          clever_algo[ combine[0] ].edges[e[0]] = e[1]
+          clever_algo[combine[0]].vertecies.add( e[0][0] )
+          clever_algo[combine[0]].vertecies.add( e[0][1] )
+        else :
+          DebugPrinter.debugPrint( "Got both already" )
+
+      # doomsday - one vertex is in two graphs
+      # - combine them
+      # - remove the edge
+      # - remove the original graph from the list
+      elif len( combine ) == 2 :
+        clever_algo[combine[0]].combine( clever_algo[combine[1] ] )
+        clever_algo[combine[0]].edges[e[0]] = e[1]
+        del clever_algo[ combine[1] ]
+
+        # the vertecies were already in both graphs
+        
+      # this is an error state
+      else :
+        print( 'How the heck did you get here?!?!?!' )
+        exit (1)
+
+      # did we do it???
+      if len( clever_algo[0].vertecies ) == len(self.vertecies) :
+        # multiply X-coords
+        foo = e[0][0][0] * e[0][1][0]
+        print( foo )
+        return
+      i += 1
+      print(i)
+    #print( clever_algo )
 
 ###############
   def main(self) :
     self.processArguments()
     self.find_every_edge()
-    self.death_by_1000_edges( 1000 )
+  #  self.death_by_1000_edges( 1000 )
+    self.death_by_1000000_edges( )
     #print ( self.edges )
 
 
